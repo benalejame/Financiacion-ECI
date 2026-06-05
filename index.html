@@ -207,17 +207,18 @@
             color: var(--text-light) !important;
         }
 
-        /* Estilos del pie de página */
+        /* Estilos del pie de página - Forzado al fondo */
         .footer-autor {
             width: 100%;
             text-align: center;
-            padding: 10px 16px;
+            padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); /* Ajuste extra para el notch inferior de iOS */
             font-size: 0.75rem;
             color: var(--text-light);
-            background-color: var(--surface);
+            background-color: #f8f9fa; /* Color ligeramente gris para separarlo visualmente */
             border-top: 1px solid var(--border);
             flex-shrink: 0;
-            font-weight: 500;
+            font-weight: 600;
+            letter-spacing: 0.3px;
         }
     </style>
 </head>
