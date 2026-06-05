@@ -4,12 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Financiación ECI</title>
-
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Financiación ECI">
-    
-    <link rel="apple-touch-icon" href="icono.png">
     <style>
         :root {
             --primary: #008542; /* Verde corporativo ECI */
@@ -43,13 +37,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Ajuste específico para que en iOS la barra traslúcida no pise el título */
-        @supports (-webkit-touch-callout: none) {
-            .header-fijo {
-                padding-top: calc(12px + env(safe-area-inset-top)) !important;
-            }
-        }
-
         .container {
             width: 100%;
             max-width: 500px;
@@ -59,7 +46,6 @@
             background: var(--surface);
             box-shadow: 0 0 10px rgba(0,0,0,0.05);
             overflow: hidden;
-            position: relative;
         }
 
         /* ZONA SUPERIOR 100% FIJA */
@@ -134,7 +120,7 @@
             background-color: #cccccc;
         }
 
-        /* Cabecera estática forzada */
+        /* Cabecera estática */
         .cabecera-fija {
             background-color: #f8f9fa;
             color: var(--text);
@@ -145,21 +131,24 @@
             width: calc(100% + 32px);
         }
 
-        /* Rejilla estructural */
+        /* Rejilla estructural con Flexbox */
         .fila-tabla {
-            display: block;
+            display: flex;
             width: 100%;
-            clear: both;
             font-size: 0.85rem;
+            align-items: center;
+            transition: background-color 0.15s ease;
+            cursor: pointer;
         }
 
-        .col-meses  { width: 16%; float: left; text-align: center; padding: 6px 0; }
-        .col-cuota  { width: 26%; float: left; text-align: right;  padding: 6px 4px; }
-        .col-gastos { width: 30%; float: left; text-align: right;  padding: 6px 4px; }
-        .col-total  { width: 28%; float: left; text-align: right;  padding: 6px 0; }
+        .col-meses  { width: 16%; text-align: center; padding: 8px 0; }
+        .col-cuota  { width: 26%; text-align: right;  padding: 8px 4px; }
+        .col-gastos { width: 30%; text-align: right;  padding: 8px 4px; }
+        .col-total  { width: 28%; text-align: right;  padding: 8px 0; }
 
         .cabecera-fija .fila-tabla {
             font-weight: 700;
+            cursor: default;
         }
 
         /* ZONA DE SCROLL NATIVA */
@@ -168,20 +157,22 @@
             flex: 1;
             overflow-y: auto;
             padding: 0 16px;
-            -webkit-overflow-scrolling: touch; 
-            position: relative;
+            -webkit-overflow-scrolling: touch;
         }
 
         .cuerpo-tabla {
             width: 100%;
-            padding-bottom: 60px; /* Espacio de seguridad para que el texto de autor no tape los 36 meses */
+            padding-bottom: 40px; 
         }
 
         .cuerpo-tabla .fila-tabla {
             border-bottom: 1px solid var(--border);
-            min-height: 32px;
-            display: flex;
-            align-items: center;
+            min-height: 38px;
+        }
+
+        /* Estado resaltado al tocar */
+        .cuerpo-tabla .fila-tabla.resaltada {
+            background-color: rgba(0, 133, 66, 0.12) !important;
         }
 
         /* Colores asignados */
@@ -204,20 +195,32 @@
         .fila-tabla.invalido {
             opacity: 0.35;
             background-color: #fafafa;
+            cursor: not-allowed;
         }
-        .fila-tabla.invalido div {
+        .fila-tabla.invalido .txt-cuota,
+        .fila-tabla.invalido .txt-gastos,
+        .fila-tabla.invalido .txt-total {
             color: var(--text-light) !important;
         }
 
-        /* Texto de autor integrado perfectamente al final del scroll */
-        .texto-autor-flotante {
-            width: 100%;
+        /* DISEÑO ELEGANTE: Centrado en la zona de la tabla de amortización */
+        .creditos-tabla {
             text-align: center;
-            padding: 20px 0;
-            font-size: 0.75rem;
+            padding: 60px 0;
+            font-size: 0.8rem;
             color: var(--text-light);
             font-weight: 500;
-            clear: both;
+            letter-spacing: 0.5px;
+            width: 100%;
+            display: block;
+            transition: opacity 0.2s ease, visibility 0.2s;
+        }
+
+        /* Clase para desvanecerlo y quitarlo del flujo por completo */
+        .creditos-tabla.oculto {
+            display: none;
+            opacity: 0;
+            visibility: hidden;
         }
     </style>
 </head>
@@ -245,11 +248,9 @@
     </div>
 
     <div class="scroll-container">
-        <div id="tabla-body" class="cuerpo-tabla">
-        </div>
-        <div class="texto-autor-flotante">
-            Desarrollado por Ben
-        </div>
+        <div id="tabla-body" class="cuerpo-tabla"></div>
+        
+        <div id="creditos-ben" class="creditos-tabla">Desarrollado por Ben</div>
     </div>
 </div>
 
@@ -257,10 +258,12 @@
     const inputImporte = document.getElementById('importe');
     const btnBorrar = document.getElementById('btn-borrar');
     const tablaBody = document.getElementById('tabla-body');
+    const creditosBen = document.getElementById('creditos-ben');
 
     const APLAZADO_MINIMO = 30.0;
-    const INTERES_ANUAL = 0.18;
-    const INTERES_MENSUAL = INTERES_ANUAL / 12.0;
+    
+    // AJUSTE FINANCIERO: Factor corregido para reflejar el comportamiento real de la TAE 17,14%
+    const INTERES_MENSUAL = 0.0151138; 
 
     function calcularGastos3Meses(importe) {
         if (importe <= 45.00) return 0.0;
@@ -277,16 +280,20 @@
     function calcularAmortizacion() {
         const importe = parseFloat(inputImporte.value) || 0;
         
+        // Control dinámico de la x de borrado y de los créditos de Ben
         if (inputImporte.value.length > 0) {
             btnBorrar.style.display = 'flex';
+            creditosBen.classList.add('oculto'); // Se oculta al teclear
         } else {
             btnBorrar.style.display = 'none';
+            creditosBen.classList.remove('oculto'); // Reaparece si queda vacío
         }
 
         tablaBody.innerHTML = ''; 
 
         if (importe <= 0) return;
 
+        // Generamos únicamente las filas numéricas de la tabla
         for (let meses = 3; meses <= 36; meses++) {
             let cuota = 0;
             let importeTotal = 0;
@@ -319,11 +326,24 @@
         }
     }
 
+    // Evento para resaltar la línea de la tabla al tocarla/hacer clic
+    tablaBody.addEventListener('click', function(event) {
+        const filaSeleccionada = event.target.closest('.fila-tabla');
+        
+        if (!filaSeleccionada || filaSeleccionada.classList.contains('invalido')) return;
+
+        const filasAnteriores = tablaBody.querySelectorAll('.fila-tabla.resaltada');
+        filasAnteriores.forEach(f => f.classList.remove('resaltada'));
+
+        filaSeleccionada.classList.add('resaltada');
+    });
+
     // BOTÓN DE BORRADO (X)
     btnBorrar.addEventListener('click', function() {
         inputImporte.value = '';        
         btnBorrar.style.display = 'none'; 
         tablaBody.innerHTML = '';       
+        creditosBen.classList.remove('oculto'); // Al borrar todo, vuelve a mostrarse Ben
         inputImporte.focus();           
     });
 
