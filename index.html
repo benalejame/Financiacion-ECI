@@ -74,21 +74,21 @@
             flex-shrink: 0;
         }
 
-        /* NUEVA ESTRUCTURA VERTICAL PARA EL ENCABEZADO */
+        /* ESTRUCTURA VERTICAL PARA EL ENCABEZADO */
         h1 {
             font-size: 1.3rem;
             margin-bottom: 12px;
             color: var(--primary);
             font-weight: 700;
             display: flex;
-            flex-direction: column; /* Apila los elementos verticalmente */
-            align-items: center;    /* Centra el logo y el texto horizontalmente */
+            flex-direction: column; 
+            align-items: center;    
             justify-content: center;
-            gap: 4px;              /* Espacio controlado entre el logo y el texto inferior */
+            gap: 4px;              
         }
 
         h1 img {
-            height: 1.6rem;         /* Un pelín más grande al estar solo en su línea para que luzca bien */
+            height: 1.6rem;         
             width: auto;
             display: block;
         }
@@ -281,13 +281,18 @@
             .header-fijo {
                 padding: 0 0 4px 0 !important;
             }
+            
+            /* LÍNEA FINA AGREGADA DEBAJO DEL ENCABEZADO AL IMPRIMIR */
             h1 {
                 font-size: 1.3rem !important;
-                margin-bottom: 10px !important;
+                margin-bottom: 14px !important;
                 color: #000000 !important;
                 display: flex !important;
                 flex-direction: column !important;
                 align-items: center !important;
+                border-bottom: 1px solid #000000 !important; /* Línea fina negra */
+                padding-bottom: 10px !important;            /* Separación interna antes de la línea */
+                width: 100% !important;
             }
             h1 img {
                 height: 1.6rem !important;
