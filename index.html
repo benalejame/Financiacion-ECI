@@ -254,14 +254,15 @@
             visibility: hidden;
         }
 
-        /* NUEVA CONFIGURACIÓN DE IMPRESIÓN COMPACTA GARANTIZADA EN 1 PÁGINA */
+        /* NUEVA CONFIGURACIÓN DE IMPRESIÓN PERFECCIONADA EN BLANCO Y NEGRO */
         @media print {
             @page {
                 size: portrait;
-                margin: 0.5cm; /* Margen perimetral mínimo */
+                margin: 1.2cm 2cm; /* Márgenes laterales amplios de 2cm */
             }
             html, body {
-                background-color: #fff !important;
+                background-color: #ffffff !important;
+                color: #000000 !important; /* Texto base en negro puro */
                 height: auto !important;
                 min-height: auto !important;
                 overflow: visible !important;
@@ -274,31 +275,40 @@
                 display: block !important;
             }
             .header-fijo {
-                padding: 0 0 4px 0 !important;
+                padding: 0 0 8px 0 !important;
             }
             h1 {
-                font-size: 1.1rem !important;
-                margin-bottom: 4px !important;
+                font-size: 1.4rem !important;
+                margin-bottom: 8px !important;
+                color: #000000 !important; /* Título negro */
             }
             .input-group {
-                margin-bottom: 6px !important;
+                margin-bottom: 12px !important;
             }
             label {
-                font-size: 0.75rem !important;
-                margin-bottom: 2px !important;
+                font-size: 0.8rem !important;
+                margin-bottom: 4px !important;
+                color: #000000 !important;
             }
             .btn-borrar {
                 display: none !important;
             }
             input[type="number"] {
-                border: 1px solid #aaa !important;
-                padding: 5px 8px !important;
-                font-size: 0.9rem !important;
+                border: 1px solid #000000 !important; /* Borde negro puro */
+                padding: 6px 10px !important;
+                font-size: 1rem !important;
+                color: #000000 !important;
             }
             .cabecera-fija {
                 margin: 0 !important;
                 width: 100% !important;
                 padding: 0 !important;
+                background-color: #ffffff !important;
+                border-bottom: 2px solid #000000 !important; /* Líneas divisorias marcadas */
+                border-top: 1px solid #000000 !important;
+            }
+            .cabecera-fija .fila-tabla {
+                color: #000000 !important;
             }
             .scroll-container {
                 overflow: visible !important;
@@ -308,18 +318,36 @@
             .cuerpo-tabla {
                 padding-bottom: 0 !important;
             }
-            /* Reducción global para forzar que quepan las 34 filas juntas */
+            /* Ajustes en las filas para estirarse verticalmente y ocupar la hoja */
             .fila-tabla {
                 page-break-inside: avoid;
-                font-size: 0.7rem !important; 
-                min-height: 22px !important;
+                font-size: 0.78rem !important; /* Letra un pelín más grande para leer cómodo */
+                min-height: 25px !important;  /* Altura mínima expandida para rellenar la hoja */
+                border-bottom: 1px solid #cccccc !important;
+                color: #000000 !important;
             }
             .col-meses, .col-cuota, .col-gastos, .col-total {
-                padding: 2px 2px !important;
+                padding: 4px 2px !important; /* Mayor padding para ocupar el espacio vertical de forma equilibrada */
+            }
+            /* Eliminamos los grises claros y colores en impresión para forzar negro nítido */
+            .txt-cuota, .txt-gastos, .txt-total {
+                color: #000000 !important;
+                font-weight: 600 !important;
+            }
+            /* Las opciones no válidas se quedan con un gris estándar legible */
+            .fila-tabla.invalido {
+                opacity: 0.4 !important;
+                background-color: transparent !important;
+            }
+            .fila-tabla.invalido .txt-cuota,
+            .fila-tabla.invalido .txt-gastos,
+            .fila-tabla.invalido .txt-total {
+                color: #555555 !important;
             }
             .creditos-tabla {
-                padding: 12px 0 0 0 !important;
-                font-size: 0.65rem !important;
+                padding: 25px 0 0 0 !important;
+                font-size: 0.75rem !important;
+                color: #555555 !important;
                 display: block !important;
                 opacity: 1 !important;
                 visibility: visible !important;
