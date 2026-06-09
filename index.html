@@ -54,14 +54,14 @@
         /* AJUSTE PARA ORDENADOR (PANTALLAS MEDIANAS/GRANDES) */
         @media (min-width: 768px) {
             html, body {
-                padding: 40px 0; /* Margen superior e inferior en escritorio */
-                align-items: flex-start; /* Permite scroll natural si la pantalla es baja */
+                padding: 40px 0; 
+                align-items: flex-start; 
             }
             .container {
                 height: auto;
-                max-height: calc(100vh - 80px); /* Evita que se salga de la pantalla */
-                border-radius: 12px; /* Esquinas redondeadas elegantes */
-                box-shadow: 0 4px 20px rgba(0,0,0,0.08); /* Sombra más definida */
+                max-height: calc(100vh - 80px); 
+                border-radius: 12px; 
+                box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
             }
         }
 
@@ -179,7 +179,6 @@
             scrollbar-color: transparent transparent; 
         }
 
-        /* Ocultar barra en Chrome, Safari y Edge en vista normal */
         .scroll-container::-webkit-scrollbar {
             width: 6px;
         }
@@ -204,7 +203,6 @@
             min-height: 38px;
         }
 
-        /* Estado resaltado al tocar */
         .cuerpo-tabla .fila-tabla.resaltada {
             background-color: rgba(0, 133, 66, 0.12) !important;
         }
@@ -256,68 +254,76 @@
             visibility: hidden;
         }
 
-        /* ESTILOS OPTIMIZADOS PARA AJUSTAR A UNA SOLA PÁGINA AL IMPRIMIR */
+        /* NUEVA CONFIGURACIÓN DE IMPRESIÓN COMPACTA GARANTIZADA EN 1 PÁGINA */
         @media print {
             @page {
                 size: portrait;
-                margin: 0.8cm 1cm; /* Márgenes ajustados para aprovechar el papel */
+                margin: 0.5cm; /* Margen perimetral mínimo */
             }
             html, body {
                 background-color: #fff !important;
-                height: 100vh !important;
-                max-height: 100vh !important;
-                overflow: hidden !important; /* Evita que genere segundas páginas vacías */
+                height: auto !important;
+                min-height: auto !important;
+                overflow: visible !important;
             }
             .container {
                 box-shadow: none !important;
                 max-width: 100% !important;
-                height: 100% !important;
-                max-height: 100vh !important;
-                overflow: hidden !important;
-                display: flex !important;
-                flex-direction: column !important;
+                height: auto !important;
+                overflow: visible !important;
+                display: block !important;
             }
             .header-fijo {
-                position: static !important;
-                padding: 0 0 5px 0 !important;
+                padding: 0 0 4px 0 !important;
             }
             h1 {
-                font-size: 1.2rem !important;
-                margin-bottom: 5px !important;
+                font-size: 1.1rem !important;
+                margin-bottom: 4px !important;
             }
             .input-group {
-                margin-bottom: 8px !important;
+                margin-bottom: 6px !important;
+            }
+            label {
+                font-size: 0.75rem !important;
+                margin-bottom: 2px !important;
             }
             .btn-borrar {
                 display: none !important;
             }
             input[type="number"] {
-                border: 1px solid #999 !important;
-                padding: 6px 10px !important;
-                font-size: 0.95rem !important;
+                border: 1px solid #aaa !important;
+                padding: 5px 8px !important;
+                font-size: 0.9rem !important;
+            }
+            .cabecera-fija {
+                margin: 0 !important;
+                width: 100% !important;
+                padding: 0 !important;
             }
             .scroll-container {
-                overflow: hidden !important; /* Quita cualquier rastro de scroll */
+                overflow: visible !important;
                 height: auto !important;
-                flex: 1 !important;
                 padding: 0 !important;
             }
             .cuerpo-tabla {
                 padding-bottom: 0 !important;
             }
+            /* Reducción global para forzar que quepan las 34 filas juntas */
             .fila-tabla {
                 page-break-inside: avoid;
-                font-size: 0.78rem !important; /* Reducción sutil de escala para asegurar el encaje */
+                font-size: 0.7rem !important; 
+                min-height: 22px !important;
             }
             .col-meses, .col-cuota, .col-gastos, .col-total {
-                padding: 5px 2px !important; /* Celdas más compactas */
+                padding: 2px 2px !important;
             }
             .creditos-tabla {
-                padding: 20px 0 0 0 !important;
-                font-size: 0.7rem !important;
+                padding: 12px 0 0 0 !important;
+                font-size: 0.65rem !important;
                 display: block !important;
                 opacity: 1 !important;
                 visibility: visible !important;
+                page-break-inside: avoid;
             }
         }
     </style>
