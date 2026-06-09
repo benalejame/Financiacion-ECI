@@ -9,15 +9,15 @@
     
     <style>
         :root {
-            --primary: #008542; /* Verde corporativo */
+            --primary: #008542; /* Verde corporativo principal */
             --background: #f1f3f5;
             --surface: #ffffff;
             --text: #333333;
             --text-light: #999999;
             --border: #e0e0e0;
             
-            /* Colores solicitados */
-            --color-cuota: #2b8a3e;     /* Verde */
+            /* Colores asignados */
+            --color-cuota: #00843D;     /* Verde exacto Pantone 348 C */
             --color-gastos: #e03131;    /* Rojo */
             --color-total: #1971c2;     /* Azul */
         }
@@ -74,22 +74,23 @@
             flex-shrink: 0;
         }
 
-        /* TÍTULO CON CONTENEDOR FLEX PARA EL LOGO */
+        /* NUEVA ESTRUCTURA VERTICAL PARA EL ENCABEZADO */
         h1 {
             font-size: 1.3rem;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             color: var(--primary);
             font-weight: 700;
             display: flex;
-            align-items: center;
+            flex-direction: column; /* Apila los elementos verticalmente */
+            align-items: center;    /* Centra el logo y el texto horizontalmente */
             justify-content: center;
-            gap: 6px;
+            gap: 4px;              /* Espacio controlado entre el logo y el texto inferior */
         }
 
         h1 img {
-            height: 1.4rem; 
+            height: 1.6rem;         /* Un pelín más grande al estar solo en su línea para que luzca bien */
             width: auto;
-            display: inline-block;
+            display: block;
         }
 
         .input-row {
@@ -257,11 +258,11 @@
             visibility: hidden;
         }
 
-        /* CONFIGURACIÓN DE IMPRESIÓN PERFECCIONADA A 1 PÁGINA */
+        /* CONFIGURACIÓN DE IMPRESIÓN A 1 PÁGINA */
         @media print {
             @page {
                 size: portrait;
-                margin: 1.2cm 2cm 0.8cm 2cm; 
+                margin: 1cm 2cm 0.8cm 2cm; 
             }
             html, body {
                 background-color: #ffffff !important;
@@ -282,20 +283,24 @@
             }
             h1 {
                 font-size: 1.3rem !important;
-                margin-bottom: 12px !important;
+                margin-bottom: 10px !important;
                 color: #000000 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
             }
             h1 img {
-                height: 1.4rem !important;
+                height: 1.6rem !important;
                 filter: grayscale(100%); 
+                margin-bottom: 2px !important;
             }
             
-            /* OCULTAMOS TODA LA FILA DE CAJAS DE TEXTO SUPERIORES (IMPORTE Y ASESOR) */
+            /* Ocultamos cajas de entrada superiores */
             .input-row {
                 display: none !important;
             }
             
-            /* HACEMOS VISIBLE EL NUEVO TEXTO DEL IMPORTE */
+            /* Texto del importe plano visible */
             .importe-impresion {
                 display: block !important;
                 font-size: 1.05rem;
@@ -322,7 +327,7 @@
                 padding-bottom: 0 !important;
             }
             
-            /* Ocultar por completo las filas que no cumplen el mínimo al imprimir */
+            /* Ocultar las filas inválidas */
             .fila-tabla.invalido {
                 display: none !important;
             }
@@ -337,12 +342,14 @@
             .col-meses, .col-cuota, .col-gastos, .col-total {
                 padding: 4px 2px !important; 
             }
+            
+            /* Forzar negro puro en la impresión en papel */
             .txt-cuota, .txt-gastos, .txt-total {
                 color: #000000 !important;
                 font-weight: 600 !important;
             }
             
-            /* Bloque de firma e información inferior */
+            /* Bloque inferior */
             .atendido-impresion {
                 display: block !important;
                 text-align: center;
@@ -369,7 +376,10 @@
 
 <div class="container">
     <div class="header-fijo">
-        <h1>Financiación <img src="logo.webp" alt="Logo"></h1>
+        <h1>
+            <img src="logo.webp" alt="Logo">
+            <span>Financiación</span>
+        </h1>
         
         <div id="importe-print-wrapper" class="importe-impresion">
             Importe de la compra: <span id="importe-value-print">0.00</span>€
@@ -438,7 +448,6 @@
     function calcularAmortizacion() {
         const importe = parseFloat(inputImporte.value) || 0;
         
-        // Sincronizar el valor para el texto plano de impresión
         importeValuePrint.textContent = inputImporte.value ? importe.toFixed(2) : "0.00";
         
         if (inputImporte.value.length > 0) {
