@@ -54,12 +54,12 @@
         /* AJUSTE PARA ORDENADOR (PANTALLAS MEDIANAS/GRANDES) */
         @media (min-width: 768px) {
             html, body {
-                padding: 40px 0; 
+                padding: 30px 0; 
                 align-items: flex-start; 
             }
             .container {
                 height: auto;
-                max-height: calc(100vh - 80px); 
+                max-height: calc(100vh - 60px); 
                 border-radius: 12px; 
                 box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
             }
@@ -82,8 +82,14 @@
             font-weight: 700;
         }
 
-        .input-group {
+        .input-row {
+            display: flex;
+            gap: 10px;
             margin-bottom: 12px;
+        }
+
+        .input-group {
+            flex: 1;
             position: relative;
         }
 
@@ -100,23 +106,27 @@
             width: 100%;
         }
 
-        input[type="number"] {
+        input[type="number"], input[type="text"] {
             width: 100%;
-            padding: 10px 40px 10px 10px; 
+            padding: 10px 10px; 
             font-size: 1.05rem;
             border: 2px solid var(--border);
             border-radius: 8px;
             outline: none;
             transition: border-color 0.2s;
         }
+        
+        input[type="number"] {
+            padding-right: 35px; /* Espacio para la X */
+        }
 
-        input[type="number"]:focus {
+        input[type="number"]:focus, input[type="text"]:focus {
             border-color: var(--primary);
         }
 
         .btn-borrar {
             position: absolute;
-            right: 12px;
+            right: 10px;
             top: 50%;
             transform: translateY(-50%);
             width: 22px;
@@ -133,8 +143,9 @@
             cursor: pointer;
         }
 
-        .btn-borrar:active {
-            background-color: #cccccc;
+        /* Bloque de atención oculto en pantalla (solo para impresión) */
+        .atendido-impresion {
+            display: none;
         }
 
         /* Cabecera estática */
@@ -148,7 +159,6 @@
             width: calc(100% + 32px);
         }
 
-        /* Rejilla estructural con Flexbox */
         .fila-tabla {
             display: flex;
             width: 100%;
@@ -189,9 +199,6 @@
             background-color: rgba(0, 0, 0, 0.1);
             border-radius: 10px;
         }
-        .scroll-container:hover::-webkit-scrollbar-thumb {
-            background-color: rgba(0, 0, 0, 0.2);
-        }
 
         .cuerpo-tabla {
             width: 100%;
@@ -207,23 +214,10 @@
             background-color: rgba(0, 133, 66, 0.12) !important;
         }
 
-        /* Colores asignados */
-        .txt-cuota {
-            color: var(--color-cuota);
-            font-weight: 600;
-        }
+        .txt-cuota { color: var(--color-cuota); font-weight: 600; }
+        .txt-gastos { color: var(--color-gastos); font-weight: 600; }
+        .txt-total { color: var(--color-total); font-weight: 600; }
 
-        .txt-gastos {
-            color: var(--color-gastos);
-            font-weight: 600;
-        }
-
-        .txt-total {
-            color: var(--color-total);
-            font-weight: 600;
-        }
-
-        /* Opacidad para opciones por debajo del mínimo de 30€ */
         .fila-tabla.invalido {
             opacity: 0.35;
             background-color: #fafafa;
@@ -235,7 +229,6 @@
             color: var(--text-light) !important;
         }
 
-        /* CRÉDITOS */
         .creditos-tabla {
             text-align: center;
             padding: 60px 0;
@@ -254,15 +247,15 @@
             visibility: hidden;
         }
 
-        /* NUEVA CONFIGURACIÓN DE IMPRESIÓN PERFECCIONADA EN BLANCO Y NEGRO */
+        /* CONFIGURACIÓN DE IMPRESIÓN PERFECCIONADA A 1 PÁGINA */
         @media print {
             @page {
                 size: portrait;
-                margin: 1.2cm 2cm; /* Márgenes laterales amplios de 2cm */
+                margin: 1cm 2cm 0.8cm 2cm; /* Ajustado el margen inferior */
             }
             html, body {
                 background-color: #ffffff !important;
-                color: #000000 !important; /* Texto base en negro puro */
+                color: #000000 !important;
                 height: auto !important;
                 min-height: auto !important;
                 overflow: visible !important;
@@ -275,28 +268,29 @@
                 display: block !important;
             }
             .header-fijo {
-                padding: 0 0 8px 0 !important;
+                padding: 0 0 4px 0 !important;
             }
             h1 {
-                font-size: 1.4rem !important;
-                margin-bottom: 8px !important;
-                color: #000000 !important; /* Título negro */
-            }
-            .input-group {
-                margin-bottom: 12px !important;
-            }
-            label {
-                font-size: 0.8rem !important;
-                margin-bottom: 4px !important;
+                font-size: 1.3rem !important;
+                margin-bottom: 6px !important;
                 color: #000000 !important;
+            }
+            
+            /* Ocultamos por completo el bloque del cuadro de texto del asesor arriba */
+            .input-group-asesor {
+                display: none !important;
+            }
+            
+            .input-row {
+                margin-bottom: 8px !important;
             }
             .btn-borrar {
                 display: none !important;
             }
             input[type="number"] {
-                border: 1px solid #000000 !important; /* Borde negro puro */
-                padding: 6px 10px !important;
-                font-size: 1rem !important;
+                border: 1px solid #000000 !important;
+                padding: 5px 8px !important;
+                font-size: 0.95rem !important;
                 color: #000000 !important;
             }
             .cabecera-fija {
@@ -304,11 +298,8 @@
                 width: 100% !important;
                 padding: 0 !important;
                 background-color: #ffffff !important;
-                border-bottom: 2px solid #000000 !important; /* Líneas divisorias marcadas */
+                border-bottom: 2px solid #000000 !important;
                 border-top: 1px solid #000000 !important;
-            }
-            .cabecera-fija .fila-tabla {
-                color: #000000 !important;
             }
             .scroll-container {
                 overflow: visible !important;
@@ -318,35 +309,39 @@
             .cuerpo-tabla {
                 padding-bottom: 0 !important;
             }
-            /* Ajustes en las filas para estirarse verticalmente y ocupar la hoja */
+            /* Reducción micrométrica estratégica para asegurar que quepa el pie de página */
             .fila-tabla {
                 page-break-inside: avoid;
-                font-size: 0.78rem !important; /* Letra un pelín más grande para leer cómodo */
-                min-height: 25px !important;  /* Altura mínima expandida para rellenar la hoja */
+                font-size: 0.75rem !important; 
+                min-height: 23px !important;  
                 border-bottom: 1px solid #cccccc !important;
                 color: #000000 !important;
             }
             .col-meses, .col-cuota, .col-gastos, .col-total {
-                padding: 4px 2px !important; /* Mayor padding para ocupar el espacio vertical de forma equilibrada */
+                padding: 3px 2px !important; 
             }
-            /* Eliminamos los grises claros y colores en impresión para forzar negro nítido */
             .txt-cuota, .txt-gastos, .txt-total {
                 color: #000000 !important;
                 font-weight: 600 !important;
             }
-            /* Las opciones no válidas se quedan con un gris estándar legible */
             .fila-tabla.invalido {
-                opacity: 0.4 !important;
-                background-color: transparent !important;
+                opacity: 0.35 !important;
             }
-            .fila-tabla.invalido .txt-cuota,
-            .fila-tabla.invalido .txt-gastos,
-            .fila-tabla.invalido .txt-total {
-                color: #555555 !important;
+            
+            /* HACEMOS VISIBLE EL BLOQUE "LE ATENDIÓ" JUSTO ENCIMA DE LOS CRÉDITOS */
+            .atendido-impresion {
+                display: block !important;
+                text-align: center;
+                font-size: 0.8rem;
+                font-weight: 600;
+                color: #000000 !important;
+                margin-top: 15px !important;
+                page-break-inside: avoid;
             }
+            
             .creditos-tabla {
-                padding: 25px 0 0 0 !important;
-                font-size: 0.75rem !important;
+                padding: 8px 0 0 0 !important; /* Reducido para que no empuje fuera de la página */
+                font-size: 0.7rem !important;
                 color: #555555 !important;
                 display: block !important;
                 opacity: 1 !important;
@@ -361,11 +356,19 @@
 <div class="container">
     <div class="header-fijo">
         <h1>Financiación ECI</h1>
-        <div class="input-group">
-            <label for="importe">Importe de la compra (€)</label>
-            <div class="input-wrapper">
-                <input type="number" id="importe" placeholder="Introduce el importe" min="0" step="0.01" inputmode="decimal">
-                <button type="button" id="btn-borrar" class="btn-borrar">✕</button>
+        
+        <div class="input-row">
+            <div class="input-group">
+                <label for="importe">Importe de la compra (€)</label>
+                <div class="input-wrapper">
+                    <input type="number" id="importe" placeholder="Introduce importe" min="0" step="0.01" inputmode="decimal">
+                    <button type="button" id="btn-borrar" class="btn-borrar">✕</button>
+                </div>
+            </div>
+            
+            <div class="input-group input-group-asesor">
+                <label for="asesor">Asesor</label>
+                <input type="text" id="asesor" placeholder="Nombre" autocomplete="off">
             </div>
         </div>
         
@@ -382,15 +385,21 @@
     <div class="scroll-container">
         <div id="tabla-body" class="cuerpo-tabla"></div>
         
+        <div id="atendido-txt" class="atendido-impresion">Le atendió: <span id="nombre-asesor-print"></span> - <span id="fecha-print"></span></div>
+        
         <div id="creditos-ben" class="creditos-tabla">Desarrollado por Ben</div>
     </div>
 </div>
 
 <script>
     const inputImporte = document.getElementById('importe');
+    const inputAsesor = document.getElementById('asesor');
     const btnBorrar = document.getElementById('btn-borrar');
     const tablaBody = document.getElementById('tabla-body');
     const creditosBen = document.getElementById('creditos-ben');
+    
+    const nombreAsesorPrint = document.getElementById('nombre-asesor-print');
+    const fechaPrint = document.getElementById('fecha-print');
 
     const APLAZADO_MINIMO = 30.0;
     const INTERES_MENSUAL = 0.0151138; 
@@ -454,6 +463,18 @@
         }
     }
 
+    // Actualiza dinámicamente el texto que se va a imprimir y carga la fecha de hoy
+    function prepararImpresion() {
+        nombreAsesorPrint.textContent = inputAsesor.value.trim() || "______";
+        
+        const hoy = new Date();
+        const dia = String(hoy.getDate()).padStart(2, '0');
+        const mes = String(hoy.getMonth() + 1).padStart(2, '0'); // Enero es 0
+        const anio = hoy.getFullYear();
+        
+        fechaPrint.textContent = `${dia}/${mes}/${anio}`;
+    }
+
     tablaBody.addEventListener('click', function(event) {
         const filaSeleccionada = event.target.closest('.fila-tabla');
         
@@ -474,12 +495,18 @@
     });
 
     inputImporte.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            inputImporte.blur(); 
-        }
+        if (event.key === 'Enter') { inputImporte.blur(); }
+    });
+    
+    inputAsesor.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') { inputAsesor.blur(); }
     });
 
     inputImporte.addEventListener('input', calcularAmortizacion);
+    inputAsesor.addEventListener('input', prepararImpresion);
+    
+    // Dejar la fecha lista por defecto al cargar
+    prepararImpresion();
 </script>
 
 </body>
