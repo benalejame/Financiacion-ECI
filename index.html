@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -29,14 +29,14 @@
         html, body {
             background-color: var(--background);
             color: var(--text);
-            height: 100vh;
+            min-height: 100vh;
             width: 100%;
-            overflow: hidden; 
             display: flex;
             justify-content: center;
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* DISEÑO BASE (MÓVIL) */
         .container {
             width: 100%;
             max-width: 500px;
@@ -46,6 +46,20 @@
             background: var(--surface);
             box-shadow: 0 0 10px rgba(0,0,0,0.05);
             overflow: hidden;
+        }
+
+        /* AJUSTE PARA ORDENADOR (PANTALLAS MEDIANAS/GRANDES) */
+        @media (min-width: 768px) {
+            html, body {
+                padding: 40px 0; /* Margen superior e inferior en escritorio */
+                align-items: flex-start; /* Permite scroll natural si la pantalla es baja */
+            }
+            .container {
+                height: auto;
+                max-height: calc(100vh - 80px); /* Evita que se salga de la pantalla */
+                border-radius: 12px; /* Esquinas redondeadas elegantes */
+                box-shadow: 0 4px 20px rgba(0,0,0,0.08); /* Sombra más definida */
+            }
         }
 
         /* ZONA SUPERIOR 100% FIJA */
@@ -151,13 +165,31 @@
             cursor: default;
         }
 
-        /* ZONA DE SCROLL NATIVA */
+        /* ZONA DE SCROLL NATIVA (Ocultando barra en pantalla si se prefiere un look limpio) */
         .scroll-container {
             width: 100%;
             flex: 1;
             overflow-y: auto;
             padding: 0 16px;
             -webkit-overflow-scrolling: touch;
+            /* Suprime la visibilidad de la barra en la mayoría de navegadores modernos */
+            scrollbar-width: thin; 
+            scrollbar-color: transparent transparent; 
+        }
+
+        /* Ocultar barra en Chrome, Safari y Edge en vista normal */
+        .scroll-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .scroll-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .scroll-container::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .scroll-container:hover::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.2); /* Solo se ve un poco al pasar el ratón */
         }
 
         .cuerpo-tabla {
@@ -203,7 +235,7 @@
             color: var(--text-light) !important;
         }
 
-        /* DISEÑO ELEGANTE: Centrado en la zona de la tabla de amortización */
+        /* DISEÑO ELEGANTE */
         .creditos-tabla {
             text-align: center;
             padding: 60px 0;
@@ -221,6 +253,58 @@
             display: none;
             opacity: 0;
             visibility: hidden;
+        }
+
+        /* ESTILOS ESPECÍFICOS PARA IMPRESIÓN EN PAPEL */
+        @media print {
+            html, body {
+                background-color: #fff !important;
+                height: auto !important;
+                overflow: visible !important;
+            }
+            .container {
+                box-shadow: none !important;
+                max-width: 100% !important;
+                height: auto !important;
+                overflow: visible !important;
+                display: block !important;
+            }
+            .header-fijo {
+                position: static !important;
+                padding: 0 !important;
+            }
+            .btn-borrar {
+                display: none !important; /* No queremos el botón '✕' en papel */
+            }
+            input[type="number"] {
+                border: 1px solid #999 !important;
+                -moz-appearance: textfield;
+            }
+            input[type="number"]::-webkit-outer-spin-button,
+            input[type="number"]::-webkit-search-decoration {
+                display: none;
+            }
+            .scroll-container {
+                overflow: visible !important;
+                height: auto !important;
+                padding: 0 !important;
+                scrollbar-width: none !important; /* Adiós barra de scroll */
+            }
+            .scroll-container::-webkit-scrollbar {
+                display: none !important; /* Adiós barra de scroll en Chrome/Safari */
+            }
+            .cuerpo-tabla {
+                padding-bottom: 0 !important;
+            }
+            .fila-tabla {
+                page-break-inside: avoid; /* Evita que una fila se parta en dos páginas */
+            }
+            .creditos-tabla {
+                padding: 30px 0 !important;
+                display: block !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+            }
         }
     </style>
 </head>
@@ -262,7 +346,6 @@
 
     const APLAZADO_MINIMO = 30.0;
     
-    // AJUSTE FINANCIERO: Factor corregido para reflejar el comportamiento real de la TAE 17,14%
     const INTERES_MENSUAL = 0.0151138; 
 
     function calcularGastos3Meses(importe) {
@@ -280,20 +363,18 @@
     function calcularAmortizacion() {
         const importe = parseFloat(inputImporte.value) || 0;
         
-        // Control dinámico de la x de borrado y de los créditos de Ben
         if (inputImporte.value.length > 0) {
             btnBorrar.style.display = 'flex';
-            creditosBen.classList.add('oculto'); // Se oculta al teclear
+            creditosBen.classList.add('oculto'); 
         } else {
             btnBorrar.style.display = 'none';
-            creditosBen.classList.remove('oculto'); // Reaparece si queda vacío
+            creditosBen.classList.remove('oculto'); 
         }
 
         tablaBody.innerHTML = ''; 
 
         if (importe <= 0) return;
 
-        // Generamos únicamente las filas numéricas de la tabla
         for (let meses = 3; meses <= 36; meses++) {
             let cuota = 0;
             let importeTotal = 0;
@@ -326,7 +407,6 @@
         }
     }
 
-    // Evento para resaltar la línea de la tabla al tocarla/hacer clic
     tablaBody.addEventListener('click', function(event) {
         const filaSeleccionada = event.target.closest('.fila-tabla');
         
@@ -338,16 +418,14 @@
         filaSeleccionada.classList.add('resaltada');
     });
 
-    // BOTÓN DE BORRADO (X)
     btnBorrar.addEventListener('click', function() {
         inputImporte.value = '';        
         btnBorrar.style.display = 'none'; 
         tablaBody.innerHTML = '';       
-        creditosBen.classList.remove('oculto'); // Al borrar todo, vuelve a mostrarse Ben
+        creditosBen.classList.remove('oculto'); 
         inputImporte.focus();           
     });
 
-    // OCULTAR TECLADO AL PULSAR ENTER
     inputImporte.addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
             inputImporte.blur(); 
