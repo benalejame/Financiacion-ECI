@@ -154,8 +154,8 @@
             cursor: pointer;
         }
 
-        /* Bloques ocultos en pantalla (solo para impresión) */
-        .importe-impresion, .atendido-impresion {
+        /* Bloque de datos unificado oculto en pantalla normal */
+        .datos-cabecera-impresion {
             display: none;
         }
 
@@ -258,7 +258,7 @@
             visibility: hidden;
         }
 
-        /* CONFIGURACIÓN DE IMPRESIÓN REORGANIZADA DE ALTO RENDIMIENTO */
+        /* CONFIGURACIÓN DE IMPRESIÓN MEJORADA */
         @media print {
             @page {
                 size: portrait;
@@ -282,7 +282,7 @@
                 padding: 0 !important;
             }
             
-            /* COMPRESIÓN EXCLUSIVA DEL LOGO Y TÍTULO PARA RECUPERAR FUENTE GRANDE */
+            /* Encabezado vertical con compresión de espacio */
             h1 {
                 font-size: 1.3rem !important;
                 margin-bottom: 6px !important; 
@@ -293,10 +293,10 @@
                 border-bottom: 1px solid #000000 !important;
                 padding-bottom: 4px !important; 
                 width: 100% !important;
-                gap: 0px !important; /* Eliminada por completo la separación entre logo y texto */
+                gap: 0px !important;
             }
             h1 img {
-                height: 1.3rem !important; /* Reducción del logo para ganar margen vertical */
+                height: 1.3rem !important; 
                 filter: grayscale(100%); 
                 margin-bottom: 0px !important;
             }
@@ -305,14 +305,23 @@
                 display: none !important;
             }
             
-            .importe-impresion {
-                display: block !important;
-                font-size: 1.05rem;
-                font-weight: 700;
-                color: #000000 !important;
+            /* NUEVA FILA UNIFICADA: Importe a la izquierda, Asesor y Fecha alineados a la derecha */
+            .datos-cabecera-impresion {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                width: 100% !important;
                 margin-top: 8px !important;
-                margin-bottom: 10px !important; 
-                text-align: left;
+                margin-bottom: 10px !important;
+                font-size: 0.95rem !important;
+                color: #000000 !important;
+            }
+            .import-print-side {
+                font-weight: 700 !important;
+            }
+            .atendio-print-side {
+                font-weight: 600 !important;
+                text-align: right !important;
             }
             
             .cabecera-fija {
@@ -336,7 +345,7 @@
                 display: none !important;
             }
             
-            /* TAMAÑO DE LETRA ORIGINAL RECUPERADO (0.78rem) */
+            /* Recuperado tamaño de fuente cómodo original */
             .fila-tabla {
                 page-break-inside: avoid;
                 font-size: 0.78rem !important; 
@@ -353,19 +362,8 @@
                 font-weight: 600 !important;
             }
             
-            /* Bloque inferior */
-            .atendido-impresion {
-                display: block !important;
-                text-align: center;
-                font-size: 0.8rem;
-                font-weight: 600;
-                color: #000000 !important;
-                margin-top: 14px !important; 
-                page-break-inside: avoid;
-            }
-            
             .creditos-tabla {
-                padding: 4px 0 0 0 !important; 
+                padding: 15px 0 0 0 !important; 
                 font-size: 0.7rem !important;
                 color: #555555 !important;
                 display: block !important;
@@ -385,8 +383,13 @@
             <span>Financiación</span>
         </h1>
         
-        <div id="importe-print-wrapper" class="importe-impresion">
-            Importe de la compra: <span id="importe-value-print">0.00</span>€
+        <div class="datos-cabecera-impresion">
+            <div class="import-print-side">
+                Importe de la compra: <span id="importe-value-print">0.00</span>€
+            </div>
+            <div class="atendio-print-side">
+                Le atendió: <span id="nombre-asesor-print">______</span> - <span id="fecha-print"></span>
+            </div>
         </div>
         
         <div class="input-row">
@@ -416,8 +419,6 @@
 
     <div class="scroll-container">
         <div id="tabla-body" class="cuerpo-tabla"></div>
-        
-        <div id="atendido-txt" class="atendido-impresion">Le atendió: <span id="nombre-asesor-print"></span> - <span id="fecha-print"></span></div>
         
         <div id="creditos-ben" class="creditos-tabla">Desarrollado por Ben</div>
     </div>
