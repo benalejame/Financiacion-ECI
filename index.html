@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Financiación ECI</title>
+    <title>Financiación</title>
     
     <link rel="icon" href="icono.png" type="image/png">
     
     <style>
         :root {
-            --primary: #008542; /* Verde corporativo ECI */
+            --primary: #008542; /* Verde corporativo */
             --background: #f1f3f5;
             --surface: #ffffff;
             --text: #333333;
@@ -74,12 +74,22 @@
             flex-shrink: 0;
         }
 
+        /* TÍTULO CON CONTENEDOR FLEX PARA EL LOGO */
         h1 {
             font-size: 1.3rem;
             margin-bottom: 8px;
-            text-align: center;
             color: var(--primary);
             font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px; /* Espacio entre la palabra Financiación y el logo */
+        }
+
+        h1 img {
+            height: 1.4rem; /* Se ajusta proporcionalmente al tamaño de la fuente */
+            width: auto;
+            display: inline-block;
         }
 
         .input-row {
@@ -275,6 +285,10 @@
                 margin-bottom: 6px !important;
                 color: #000000 !important;
             }
+            h1 img {
+                height: 1.4rem !important; /* Mantiene proporción nítida en papel */
+                filter: grayscale(100%); /* Asegura el paso limpio a blanco y negro si la impresora no es a color */
+            }
             
             /* Ocultamos el bloque del cuadro de texto del asesor arriba */
             .input-group-asesor {
@@ -310,7 +324,7 @@
                 padding-bottom: 0 !important;
             }
             
-            /* CAMBIO CRÍTICO: Ocultar por completo las filas que no cumplen el mínimo al imprimir */
+            /* Ocultar por completo las filas que no cumplen el mínimo al imprimir */
             .fila-tabla.invalido {
                 display: none !important;
             }
@@ -357,7 +371,7 @@
 
 <div class="container">
     <div class="header-fijo">
-        <h1>Financiación ECI</h1>
+        <h1>Financiación <img src="logo.webp" alt="Logo"></h1>
         
         <div class="input-row">
             <div class="input-group">
