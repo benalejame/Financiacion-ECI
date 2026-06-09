@@ -258,11 +258,11 @@
             visibility: hidden;
         }
 
-        /* CONFIGURACIÓN DE IMPRESIÓN A 1 PÁGINA */
+        /* CONFIGURACIÓN DE IMPRESIÓN REORGANIZADA DE ALTO RENDIMIENTO */
         @media print {
             @page {
                 size: portrait;
-                margin: 1cm 2cm 0.8cm 2cm; 
+                margin: 0.8cm 2cm; 
             }
             html, body {
                 background-color: #ffffff !important;
@@ -279,39 +279,39 @@
                 display: block !important;
             }
             .header-fijo {
-                padding: 0 0 4px 0 !important;
+                padding: 0 !important;
             }
             
-            /* LÍNEA FINA AGREGADA DEBAJO DEL ENCABEZADO AL IMPRIMIR */
+            /* COMPRESIÓN EXCLUSIVA DEL LOGO Y TÍTULO PARA RECUPERAR FUENTE GRANDE */
             h1 {
                 font-size: 1.3rem !important;
-                margin-bottom: 14px !important;
+                margin-bottom: 6px !important; 
                 color: #000000 !important;
                 display: flex !important;
                 flex-direction: column !important;
                 align-items: center !important;
-                border-bottom: 1px solid #000000 !important; /* Línea fina negra */
-                padding-bottom: 10px !important;            /* Separación interna antes de la línea */
+                border-bottom: 1px solid #000000 !important;
+                padding-bottom: 4px !important; 
                 width: 100% !important;
+                gap: 0px !important; /* Eliminada por completo la separación entre logo y texto */
             }
             h1 img {
-                height: 1.6rem !important;
+                height: 1.3rem !important; /* Reducción del logo para ganar margen vertical */
                 filter: grayscale(100%); 
-                margin-bottom: 2px !important;
+                margin-bottom: 0px !important;
             }
             
-            /* Ocultamos cajas de entrada superiores */
             .input-row {
                 display: none !important;
             }
             
-            /* Texto del importe plano visible */
             .importe-impresion {
                 display: block !important;
                 font-size: 1.05rem;
                 font-weight: 700;
                 color: #000000 !important;
-                margin-bottom: 14px !important;
+                margin-top: 8px !important;
+                margin-bottom: 10px !important; 
                 text-align: left;
             }
             
@@ -332,11 +332,11 @@
                 padding-bottom: 0 !important;
             }
             
-            /* Ocultar las filas inválidas */
             .fila-tabla.invalido {
                 display: none !important;
             }
             
+            /* TAMAÑO DE LETRA ORIGINAL RECUPERADO (0.78rem) */
             .fila-tabla {
                 page-break-inside: avoid;
                 font-size: 0.78rem !important; 
@@ -348,7 +348,6 @@
                 padding: 4px 2px !important; 
             }
             
-            /* Forzar negro puro en la impresión en papel */
             .txt-cuota, .txt-gastos, .txt-total {
                 color: #000000 !important;
                 font-weight: 600 !important;
@@ -361,12 +360,12 @@
                 font-size: 0.8rem;
                 font-weight: 600;
                 color: #000000 !important;
-                margin-top: 20px !important;
+                margin-top: 14px !important; 
                 page-break-inside: avoid;
             }
             
             .creditos-tabla {
-                padding: 10px 0 0 0 !important;
+                padding: 4px 0 0 0 !important; 
                 font-size: 0.7rem !important;
                 color: #555555 !important;
                 display: block !important;
