@@ -83,11 +83,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px; /* Espacio entre la palabra Financiación y el logo */
+            gap: 6px;
         }
 
         h1 img {
-            height: 1.4rem; /* Se ajusta proporcionalmente al tamaño de la fuente */
+            height: 1.4rem; 
             width: auto;
             display: inline-block;
         }
@@ -153,8 +153,8 @@
             cursor: pointer;
         }
 
-        /* Bloque de atención oculto en pantalla */
-        .atendido-impresion {
+        /* Bloques ocultos en pantalla (solo para impresión) */
+        .importe-impresion, .atendido-impresion {
             display: none;
         }
 
@@ -282,31 +282,29 @@
             }
             h1 {
                 font-size: 1.3rem !important;
-                margin-bottom: 6px !important;
+                margin-bottom: 12px !important;
                 color: #000000 !important;
             }
             h1 img {
-                height: 1.4rem !important; /* Mantiene proporción nítida en papel */
-                filter: grayscale(100%); /* Asegura el paso limpio a blanco y negro si la impresora no es a color */
+                height: 1.4rem !important;
+                filter: grayscale(100%); 
             }
             
-            /* Ocultamos el bloque del cuadro de texto del asesor arriba */
-            .input-group-asesor {
-                display: none !important;
-            }
-            
+            /* OCULTAMOS TODA LA FILA DE CAJAS DE TEXTO SUPERIORES (IMPORTE Y ASESOR) */
             .input-row {
-                margin-bottom: 8px !important;
-            }
-            .btn-borrar {
                 display: none !important;
             }
-            input[type="number"] {
-                border: 1px solid #000000 !important;
-                padding: 5px 8px !important;
-                font-size: 0.95rem !important;
+            
+            /* HACEMOS VISIBLE EL NUEVO TEXTO DEL IMPORTE */
+            .importe-impresion {
+                display: block !important;
+                font-size: 1.05rem;
+                font-weight: 700;
                 color: #000000 !important;
+                margin-bottom: 14px !important;
+                text-align: left;
             }
+            
             .cabecera-fija {
                 margin: 0 !important;
                 width: 100% !important;
@@ -373,6 +371,10 @@
     <div class="header-fijo">
         <h1>Financiación <img src="logo.webp" alt="Logo"></h1>
         
+        <div id="importe-print-wrapper" class="importe-impresion">
+            Importe de la compra: <span id="importe-value-print">0.00</span>€
+        </div>
+        
         <div class="input-row">
             <div class="input-group">
                 <label for="importe">Importe de la compra (€)</label>
@@ -414,6 +416,7 @@
     const tablaBody = document.getElementById('tabla-body');
     const creditosBen = document.getElementById('creditos-ben');
     
+    const importeValuePrint = document.getElementById('importe-value-print');
     const nombreAsesorPrint = document.getElementById('nombre-asesor-print');
     const fechaPrint = document.getElementById('fecha-print');
 
@@ -434,6 +437,9 @@
 
     function calcularAmortizacion() {
         const importe = parseFloat(inputImporte.value) || 0;
+        
+        // Sincronizar el valor para el texto plano de impresión
+        importeValuePrint.textContent = inputImporte.value ? importe.toFixed(2) : "0.00";
         
         if (inputImporte.value.length > 0) {
             btnBorrar.style.display = 'flex';
@@ -506,6 +512,7 @@
         btnBorrar.style.display = 'none'; 
         tablaBody.innerHTML = '';       
         creditosBen.classList.remove('oculto'); 
+        importeValuePrint.textContent = "0.00";
         inputImporte.focus();           
     });
 
