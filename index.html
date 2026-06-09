@@ -117,7 +117,7 @@
         }
         
         input[type="number"] {
-            padding-right: 35px; /* Espacio para la X */
+            padding-right: 35px; 
         }
 
         input[type="number"]:focus, input[type="text"]:focus {
@@ -143,7 +143,7 @@
             cursor: pointer;
         }
 
-        /* Bloque de atención oculto en pantalla (solo para impresión) */
+        /* Bloque de atención oculto en pantalla */
         .atendido-impresion {
             display: none;
         }
@@ -251,7 +251,7 @@
         @media print {
             @page {
                 size: portrait;
-                margin: 1cm 2cm 0.8cm 2cm; /* Ajustado el margen inferior */
+                margin: 1.2cm 2cm 0.8cm 2cm; 
             }
             html, body {
                 background-color: #ffffff !important;
@@ -276,7 +276,7 @@
                 color: #000000 !important;
             }
             
-            /* Ocultamos por completo el bloque del cuadro de texto del asesor arriba */
+            /* Ocultamos el bloque del cuadro de texto del asesor arriba */
             .input-group-asesor {
                 display: none !important;
             }
@@ -309,38 +309,40 @@
             .cuerpo-tabla {
                 padding-bottom: 0 !important;
             }
-            /* Reducción micrométrica estratégica para asegurar que quepa el pie de página */
+            
+            /* CAMBIO CRÍTICO: Ocultar por completo las filas que no cumplen el mínimo al imprimir */
+            .fila-tabla.invalido {
+                display: none !important;
+            }
+            
             .fila-tabla {
                 page-break-inside: avoid;
-                font-size: 0.75rem !important; 
-                min-height: 23px !important;  
+                font-size: 0.78rem !important; 
+                min-height: 25px !important;  
                 border-bottom: 1px solid #cccccc !important;
                 color: #000000 !important;
             }
             .col-meses, .col-cuota, .col-gastos, .col-total {
-                padding: 3px 2px !important; 
+                padding: 4px 2px !important; 
             }
             .txt-cuota, .txt-gastos, .txt-total {
                 color: #000000 !important;
                 font-weight: 600 !important;
             }
-            .fila-tabla.invalido {
-                opacity: 0.35 !important;
-            }
             
-            /* HACEMOS VISIBLE EL BLOQUE "LE ATENDIÓ" JUSTO ENCIMA DE LOS CRÉDITOS */
+            /* Bloque de firma e información inferior */
             .atendido-impresion {
                 display: block !important;
                 text-align: center;
                 font-size: 0.8rem;
                 font-weight: 600;
                 color: #000000 !important;
-                margin-top: 15px !important;
+                margin-top: 20px !important;
                 page-break-inside: avoid;
             }
             
             .creditos-tabla {
-                padding: 8px 0 0 0 !important; /* Reducido para que no empuje fuera de la página */
+                padding: 10px 0 0 0 !important;
                 font-size: 0.7rem !important;
                 color: #555555 !important;
                 display: block !important;
@@ -463,13 +465,12 @@
         }
     }
 
-    // Actualiza dinámicamente el texto que se va a imprimir y carga la fecha de hoy
     function prepararImpresion() {
         nombreAsesorPrint.textContent = inputAsesor.value.trim() || "______";
         
         const hoy = new Date();
         const dia = String(hoy.getDate()).padStart(2, '0');
-        const mes = String(hoy.getMonth() + 1).padStart(2, '0'); // Enero es 0
+        const mes = String(hoy.getMonth() + 1).padStart(2, '0'); 
         const anio = hoy.getFullYear();
         
         fechaPrint.textContent = `${dia}/${mes}/${anio}`;
@@ -505,7 +506,6 @@
     inputImporte.addEventListener('input', calcularAmortizacion);
     inputAsesor.addEventListener('input', prepararImpresion);
     
-    // Dejar la fecha lista por defecto al cargar
     prepararImpresion();
 </script>
 
