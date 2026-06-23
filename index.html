@@ -1,23 +1,20 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Financiación</title>
-    
-    <link rel="icon" href="icono.png" type="image/png">
-    
+    <title>Financiación ECI</title>
     <style>
         :root {
-            --primary: #008542; /* Verde corporativo principal */
+            --primary: #008542; /* Verde corporativo ECI */
             --background: #f1f3f5;
             --surface: #ffffff;
             --text: #333333;
             --text-light: #999999;
             --border: #e0e0e0;
             
-            /* Colores asignados */
-            --color-cuota: #00843D;     /* Verde exacto Pantone 348 C */
+            /* Colores solicitados */
+            --color-cuota: #2b8a3e;     /* Verde */
             --color-gastos: #e03131;    /* Rojo */
             --color-total: #1971c2;     /* Azul */
         }
@@ -32,14 +29,14 @@
         html, body {
             background-color: var(--background);
             color: var(--text);
-            min-height: 100vh;
+            height: 100vh;
             width: 100%;
+            overflow: hidden; 
             display: flex;
             justify-content: center;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* DISEÑO BASE (MÓVIL) */
         .container {
             width: 100%;
             max-width: 500px;
@@ -51,20 +48,6 @@
             overflow: hidden;
         }
 
-        /* AJUSTE PARA ORDENADOR (PANTALLAS MEDIANAS/GRANDES) */
-        @media (min-width: 768px) {
-            html, body {
-                padding: 30px 0; 
-                align-items: flex-start; 
-            }
-            .container {
-                height: auto;
-                max-height: calc(100vh - 60px); 
-                border-radius: 12px; 
-                box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
-            }
-        }
-
         /* ZONA SUPERIOR 100% FIJA */
         .header-fijo {
             width: 100%;
@@ -74,33 +57,16 @@
             flex-shrink: 0;
         }
 
-        /* ESTRUCTURA VERTICAL PARA EL ENCABEZADO */
         h1 {
             font-size: 1.3rem;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
+            text-align: center;
             color: var(--primary);
             font-weight: 700;
-            display: flex;
-            flex-direction: column; 
-            align-items: center;    
-            justify-content: center;
-            gap: 4px;              
-        }
-
-        h1 img {
-            height: 1.6rem;         
-            width: auto;
-            display: block;
-        }
-
-        .input-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 12px;
         }
 
         .input-group {
-            flex: 1;
+            margin-bottom: 12px;
             position: relative;
         }
 
@@ -117,27 +83,23 @@
             width: 100%;
         }
 
-        input[type="number"], input[type="text"] {
+        input[type="number"] {
             width: 100%;
-            padding: 10px 10px; 
+            padding: 10px 40px 10px 10px; 
             font-size: 1.05rem;
             border: 2px solid var(--border);
             border-radius: 8px;
             outline: none;
             transition: border-color 0.2s;
         }
-        
-        input[type="number"] {
-            padding-right: 35px; 
-        }
 
-        input[type="number"]:focus, input[type="text"]:focus {
+        input[type="number"]:focus {
             border-color: var(--primary);
         }
 
         .btn-borrar {
             position: absolute;
-            right: 10px;
+            right: 12px;
             top: 50%;
             transform: translateY(-50%);
             width: 22px;
@@ -154,9 +116,8 @@
             cursor: pointer;
         }
 
-        /* Bloque de datos unificado oculto en pantalla normal */
-        .datos-cabecera-impresion {
-            display: none;
+        .btn-borrar:active {
+            background-color: #cccccc;
         }
 
         /* Cabecera estática */
@@ -170,6 +131,7 @@
             width: calc(100% + 32px);
         }
 
+        /* Rejilla estructural con Flexbox */
         .fila-tabla {
             display: flex;
             width: 100%;
@@ -196,24 +158,11 @@
             overflow-y: auto;
             padding: 0 16px;
             -webkit-overflow-scrolling: touch;
-            scrollbar-width: thin; 
-            scrollbar-color: transparent transparent; 
-        }
-
-        .scroll-container::-webkit-scrollbar {
-            width: 6px;
-        }
-        .scroll-container::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .scroll-container::-webkit-scrollbar-thumb {
-            background-color: rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
         }
 
         .cuerpo-tabla {
             width: 100%;
-            padding-bottom: 40px; 
+            padding-bottom: 20px; 
         }
 
         .cuerpo-tabla .fila-tabla {
@@ -221,14 +170,28 @@
             min-height: 38px;
         }
 
+        /* Estado resaltado al tocar */
         .cuerpo-tabla .fila-tabla.resaltada {
             background-color: rgba(0, 133, 66, 0.12) !important;
         }
 
-        .txt-cuota { color: var(--color-cuota); font-weight: 600; }
-        .txt-gastos { color: var(--color-gastos); font-weight: 600; }
-        .txt-total { color: var(--color-total); font-weight: 600; }
+        /* Colores asignados */
+        .txt-cuota {
+            color: var(--color-cuota);
+            font-weight: 600;
+        }
 
+        .txt-gastos {
+            color: var(--color-gastos);
+            font-weight: 600;
+        }
+
+        .txt-total {
+            color: var(--color-total);
+            font-weight: 600;
+        }
+
+        /* Opacidad para opciones por debajo del mínimo de 30€ */
         .fila-tabla.invalido {
             opacity: 0.35;
             background-color: #fafafa;
@@ -240,137 +203,16 @@
             color: var(--text-light) !important;
         }
 
+        /* DISEÑO ELEGANTE: Centrado al final del scroll */
         .creditos-tabla {
             text-align: center;
-            padding: 60px 0;
+            padding: 40px 0 20px 0;
             font-size: 0.8rem;
             color: var(--text-light);
             font-weight: 500;
             letter-spacing: 0.5px;
             width: 100%;
             display: block;
-            transition: opacity 0.2s ease, visibility 0.2s;
-        }
-
-        .creditos-tabla.oculto {
-            display: none;
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        /* CONFIGURACIÓN DE IMPRESIÓN MEJORADA */
-        @media print {
-            @page {
-                size: portrait;
-                margin: 0.8cm 2cm; 
-            }
-            html, body {
-                background-color: #ffffff !important;
-                color: #000000 !important;
-                height: auto !important;
-                min-height: auto !important;
-                overflow: visible !important;
-            }
-            .container {
-                box-shadow: none !important;
-                max-width: 100% !important;
-                height: auto !important;
-                overflow: visible !important;
-                display: block !important;
-            }
-            .header-fijo {
-                padding: 0 !important;
-            }
-            
-            /* Encabezado vertical con compresión de espacio */
-            h1 {
-                font-size: 1.3rem !important;
-                margin-bottom: 6px !important; 
-                color: #000000 !important;
-                display: flex !important;
-                flex-direction: column !important;
-                align-items: center !important;
-                border-bottom: 1px solid #000000 !important;
-                padding-bottom: 4px !important; 
-                width: 100% !important;
-                gap: 0px !important;
-            }
-            h1 img {
-                height: 1.3rem !important; 
-                filter: grayscale(100%); 
-                margin-bottom: 0px !important;
-            }
-            
-            .input-row {
-                display: none !important;
-            }
-            
-            /* NUEVA FILA UNIFICADA: Importe a la izquierda, Asesor y Fecha alineados a la derecha */
-            .datos-cabecera-impresion {
-                display: flex !important;
-                justify-content: space-between !important;
-                align-items: center !important;
-                width: 100% !important;
-                margin-top: 8px !important;
-                margin-bottom: 10px !important;
-                font-size: 0.95rem !important;
-                color: #000000 !important;
-            }
-            .import-print-side {
-                font-weight: 700 !important;
-            }
-            .atendio-print-side {
-                font-weight: 600 !important;
-                text-align: right !important;
-            }
-            
-            .cabecera-fija {
-                margin: 0 !important;
-                width: 100% !important;
-                padding: 0 !important;
-                background-color: #ffffff !important;
-                border-bottom: 2px solid #000000 !important;
-                border-top: 1px solid #000000 !important;
-            }
-            .scroll-container {
-                overflow: visible !important;
-                height: auto !important;
-                padding: 0 !important;
-            }
-            .cuerpo-tabla {
-                padding-bottom: 0 !important;
-            }
-            
-            .fila-tabla.invalido {
-                display: none !important;
-            }
-            
-            /* Recuperado tamaño de fuente cómodo original */
-            .fila-tabla {
-                page-break-inside: avoid;
-                font-size: 0.78rem !important; 
-                min-height: 25px !important;  
-                border-bottom: 1px solid #cccccc !important;
-                color: #000000 !important;
-            }
-            .col-meses, .col-cuota, .col-gastos, .col-total {
-                padding: 4px 2px !important; 
-            }
-            
-            .txt-cuota, .txt-gastos, .txt-total {
-                color: #000000 !important;
-                font-weight: 600 !important;
-            }
-            
-            .creditos-tabla {
-                padding: 15px 0 0 0 !important; 
-                font-size: 0.7rem !important;
-                color: #555555 !important;
-                display: block !important;
-                opacity: 1 !important;
-                visibility: visible !important;
-                page-break-inside: avoid;
-            }
         }
     </style>
 </head>
@@ -378,32 +220,12 @@
 
 <div class="container">
     <div class="header-fijo">
-        <h1>
-            <img src="logo.webp" alt="Logo">
-            <span>Financiación</span>
-        </h1>
-        
-        <div class="datos-cabecera-impresion">
-            <div class="import-print-side">
-                Importe de la compra: <span id="importe-value-print">0.00</span>€
-            </div>
-            <div class="atendio-print-side">
-                Le atendió: <span id="nombre-asesor-print">______</span> - <span id="fecha-print"></span>
-            </div>
-        </div>
-        
-        <div class="input-row">
-            <div class="input-group">
-                <label for="importe">Importe de la compra (€)</label>
-                <div class="input-wrapper">
-                    <input type="number" id="importe" placeholder="Introduce importe" min="0" step="0.01" inputmode="decimal">
-                    <button type="button" id="btn-borrar" class="btn-borrar">✕</button>
-                </div>
-            </div>
-            
-            <div class="input-group input-group-asesor">
-                <label for="asesor">Asesor</label>
-                <input type="text" id="asesor" placeholder="Nombre" autocomplete="off">
+        <h1>Financiación ECI</h1>
+        <div class="input-group">
+            <label for="importe">Importe de la compra (€)</label>
+            <div class="input-wrapper">
+                <input type="number" id="importe" placeholder="Introduce el importe" min="0" step="0.01" inputmode="decimal">
+                <button type="button" id="btn-borrar" class="btn-borrar">✕</button>
             </div>
         </div>
         
@@ -420,23 +242,29 @@
     <div class="scroll-container">
         <div id="tabla-body" class="cuerpo-tabla"></div>
         
-        <div id="creditos-ben" class="creditos-tabla">Desarrollado por Ben</div>
+        <div id="creditos-ben" class="creditos-tabla"></div>
     </div>
 </div>
 
 <script>
     const inputImporte = document.getElementById('importe');
-    const inputAsesor = document.getElementById('asesor');
     const btnBorrar = document.getElementById('btn-borrar');
     const tablaBody = document.getElementById('tabla-body');
     const creditosBen = document.getElementById('creditos-ben');
-    
-    const importeValuePrint = document.getElementById('importe-value-print');
-    const nombreAsesorPrint = document.getElementById('nombre-asesor-print');
-    const fechaPrint = document.getElementById('fecha-print');
 
     const APLAZADO_MINIMO = 30.0;
+    
+    // AJUSTE FINANCIERO: Factor corregido para reflejar el comportamiento real de la TAE 17,14%
     const INTERES_MENSUAL = 0.0151138; 
+
+    // Inicialización de créditos con el formato y rango de años dinámico
+    function actualizarCreditos() {
+        const anyoInicio = 2026;
+        const anyoActual = new Date().getFullYear();
+        const textoAnnos = anyoActual > anyoInicio ? `${anyoInicio}-${anyoActual}` : `${anyoInicio}`;
+        creditosBen.textContent = `© ${textoAnnos} Ben A. M.`;
+    }
+    actualizarCreditos();
 
     function calcularGastos3Meses(importe) {
         if (importe <= 45.00) return 0.0;
@@ -453,20 +281,18 @@
     function calcularAmortizacion() {
         const importe = parseFloat(inputImporte.value) || 0;
         
-        importeValuePrint.textContent = inputImporte.value ? importe.toFixed(2) : "0.00";
-        
+        // Control dinámico de la x de borrado
         if (inputImporte.value.length > 0) {
             btnBorrar.style.display = 'flex';
-            creditosBen.classList.add('oculto'); 
         } else {
             btnBorrar.style.display = 'none';
-            creditosBen.classList.remove('oculto'); 
         }
 
         tablaBody.innerHTML = ''; 
 
         if (importe <= 0) return;
 
+        // Generamos únicamente las filas numéricas de la tabla
         for (let meses = 3; meses <= 36; meses++) {
             let cuota = 0;
             let importeTotal = 0;
@@ -499,17 +325,7 @@
         }
     }
 
-    function prepararImpresion() {
-        nombreAsesorPrint.textContent = inputAsesor.value.trim() || "______";
-        
-        const hoy = new Date();
-        const dia = String(hoy.getDate()).padStart(2, '0');
-        const mes = String(hoy.getMonth() + 1).padStart(2, '0'); 
-        const anio = hoy.getFullYear();
-        
-        fechaPrint.textContent = `${dia}/${mes}/${anio}`;
-    }
-
+    // Evento para resaltar la línea de la tabla al tocarla/hacer clic
     tablaBody.addEventListener('click', function(event) {
         const filaSeleccionada = event.target.closest('.fila-tabla');
         
@@ -521,27 +337,22 @@
         filaSeleccionada.classList.add('resaltada');
     });
 
+    // BOTÓN DE BORRADO (X)
     btnBorrar.addEventListener('click', function() {
         inputImporte.value = '';        
         btnBorrar.style.display = 'none'; 
         tablaBody.innerHTML = '';       
-        creditosBen.classList.remove('oculto'); 
-        importeValuePrint.textContent = "0.00";
         inputImporte.focus();           
     });
 
+    // OCULTAR TECLADO AL PULSAR ENTER
     inputImporte.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') { inputImporte.blur(); }
-    });
-    
-    inputAsesor.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') { inputAsesor.blur(); }
+        if (event.key === 'Enter') {
+            inputImporte.blur(); 
+        }
     });
 
     inputImporte.addEventListener('input', calcularAmortizacion);
-    inputAsesor.addEventListener('input', prepararImpresion);
-    
-    prepararImpresion();
 </script>
 
 </body>
