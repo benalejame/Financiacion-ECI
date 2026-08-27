@@ -9,17 +9,16 @@
     
     <style>
         :root {
-            --primary: #008542; /* Verde corporativo principal */
+            --primary: #008542; 
             --background: #f1f3f5;
             --surface: #ffffff;
             --text: #333333;
             --text-light: #999999;
             --border: #e0e0e0;
             
-            /* Colores asignados */
-            --color-cuota: #00843D;     /* Verde exacto Pantone 348 C */
-            --color-gastos: #e03131;    /* Rojo */
-            --color-total: #1971c2;     /* Azul */
+            --color-cuota: #00843D;     
+            --color-gastos: #e03131;    
+            --color-total: #1971c2;     
         }
 
         * {
@@ -39,7 +38,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* DISEÑO BASE (MÓVIL) */
         .container {
             width: 100%;
             max-width: 500px;
@@ -51,7 +49,6 @@
             overflow: hidden;
         }
 
-        /* AJUSTE PARA ORDENADOR (PANTALLAS MEDIANAS/GRANDES) */
         @media (min-width: 768px) {
             html, body {
                 padding: 30px 0; 
@@ -65,7 +62,6 @@
             }
         }
 
-        /* ZONA SUPERIOR 100% FIJA */
         .header-fijo {
             width: 100%;
             padding: 12px 16px 0px 16px;
@@ -74,7 +70,6 @@
             flex-shrink: 0;
         }
 
-        /* ESTRUCTURA VERTICAL PARA EL ENCABEZADO */
         h1 {
             font-size: 1.3rem;
             margin-bottom: 12px;
@@ -154,12 +149,10 @@
             cursor: pointer;
         }
 
-        /* Bloque de datos unificado oculto en pantalla normal */
         .datos-cabecera-impresion {
             display: none;
         }
 
-        /* Cabecera estática */
         .cabecera-fija {
             background-color: #f8f9fa;
             color: var(--text);
@@ -189,7 +182,6 @@
             cursor: default;
         }
 
-        /* ZONA DE SCROLL NATIVA */
         .scroll-container {
             width: 100%;
             flex: 1;
@@ -240,7 +232,6 @@
             color: var(--text-light) !important;
         }
 
-        /* DISEÑO CENTRADO */
         .creditos-tabla {
             text-align: center;
             padding: 40px 0 20px 0;
@@ -252,7 +243,6 @@
             display: block;
         }
 
-        /* CONFIGURACIÓN DE IMPRESIÓN */
         @media print {
             @page {
                 size: portrait;
@@ -301,16 +291,24 @@
             .datos-cabecera-impresion {
                 display: flex !important;
                 justify-content: space-between !important;
-                align-items: center !important;
+                align-items: flex-start !important;
                 width: 100% !important;
                 margin-top: 8px !important;
                 margin-bottom: 10px !important;
-                font-size: 0.95rem !important;
+                font-size: 0.9rem !important;
                 color: #000000 !important;
             }
+            
             .import-print-side {
+                font-weight: 500 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 2px !important;
+            }
+            .import-print-side strong {
                 font-weight: 700 !important;
             }
+            
             .atendio-print-side {
                 font-weight: 600 !important;
                 text-align: right !important;
@@ -375,8 +373,8 @@
         </h1>
         
         <div class="datos-cabecera-impresion">
-            <div class="import-print-side">
-                Importe de la compra: <span id="importe-value-print">0.00</span>€
+            <div class="import-print-side" id="bloque-desglose-impresion">
+                <div>Importe a financiar: <strong id="importe-value-print">0.00</strong>€</div>
             </div>
             <div class="atendio-print-side">
                 Le atendió: <span id="nombre-asesor-print">______</span> - <span id="fecha-print"></span>
@@ -387,7 +385,7 @@
             <div class="input-group">
                 <label for="importe">Importe de la compra (€)</label>
                 <div class="input-wrapper">
-                    <input type="text" id="importe" placeholder="Ej: 899 + 49 - 20" inputmode="text" autocomplete="off" autocorrect="off">
+                    <input type="text" id="importe" placeholder="Ej: 1200 - 300" inputmode="text" autocomplete="off" autocorrect="off">
                     <button type="button" id="btn-borrar" class="btn-borrar">✕</button>
                 </div>
             </div>
@@ -421,7 +419,7 @@
     const tablaBody = document.getElementById('tabla-body');
     const creditosBen = document.getElementById('creditos-ben');
     
-    const importeValuePrint = document.getElementById('importe-value-print');
+    const bloqueDesglose = document.getElementById('bloque-desglose-impresion');
     const nombreAsesorPrint = document.getElementById('nombre-asesor-print');
     const fechaPrint = document.getElementById('fecha-print');
 
@@ -436,21 +434,38 @@
     }
     actualizarCreditos();
 
-    // Función segura para evaluar sumas y restas con coma o punto
-    function evaluarExpresion(str) {
-        if (!str) return 0;
+    // Evalúa la expresión y extrae compra, entrega a cuenta y total
+    function parsearImporte(str) {
+        if (!str) return { total: 0, totalCompra: 0, entregaCuenta: 0, tieneResta: false };
+        
         let limpia = str.replace(/,/g, '.').replace(/[^0-9+\-.]/g, '');
         const tokens = limpia.match(/[+-]?[0-9]*\.?[0-9]+/g);
-        if (!tokens) return 0;
+        if (!tokens) return { total: 0, totalCompra: 0, entregaCuenta: 0, tieneResta: false };
 
         let total = 0;
+        let totalCompra = 0;
+        let entregaCuenta = 0;
+        let tieneResta = false;
+
         for (let numStr of tokens) {
             const val = parseFloat(numStr);
             if (!isNaN(val)) {
                 total += val;
+                if (val >= 0) {
+                    totalCompra += val;
+                } else {
+                    entregaCuenta += Math.abs(val);
+                    tieneResta = true;
+                }
             }
         }
-        return total > 0 ? total : 0;
+
+        return {
+            total: total > 0 ? total : 0,
+            totalCompra: totalCompra,
+            entregaCuenta: entregaCuenta,
+            tieneResta: tieneResta
+        };
     }
 
     function calcularGastos3Meses(importe) {
@@ -465,11 +480,26 @@
         return 25.00;
     }
 
+    function actualizarImpresionDesglose(datos) {
+        if (datos.tieneResta && datos.entregaCuenta > 0) {
+            bloqueDesglose.innerHTML = `
+                <div>Valor de la compra: <strong>${datos.totalCompra.toFixed(2)}€</strong></div>
+                <div>Entrega a cuenta: <strong>${datos.entregaCuenta.toFixed(2)}€</strong></div>
+                <div>Importe a financiar: <strong>${datos.total.toFixed(2)}€</strong></div>
+            `;
+        } else {
+            bloqueDesglose.innerHTML = `
+                <div>Importe a financiar: <strong>${datos.total > 0 ? datos.total.toFixed(2) : "0.00"}€</strong></div>
+            `;
+        }
+    }
+
     function calcularAmortizacion() {
         const valorTexto = inputImporte.value.trim();
-        const importe = evaluarExpresion(valorTexto);
+        const datos = parsearImporte(valorTexto);
+        const importe = datos.total;
         
-        importeValuePrint.textContent = importe > 0 ? importe.toFixed(2) : "0.00";
+        actualizarImpresionDesglose(datos);
         
         if (valorTexto.length > 0) {
             btnBorrar.style.display = 'flex';
@@ -538,15 +568,16 @@
         inputImporte.value = '';        
         btnBorrar.style.display = 'none'; 
         tablaBody.innerHTML = '';       
-        importeValuePrint.textContent = "0.00";
+        actualizarImpresionDesglose({ total: 0, tieneResta: false });
         inputImporte.focus();           
     });
 
+    // Colapsa el resultado al pulsar Enter en la casilla
     inputImporte.addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
-            const total = evaluarExpresion(inputImporte.value);
-            if (total > 0) {
-                inputImporte.value = total.toFixed(2);
+            const datos = parsearImporte(inputImporte.value);
+            if (datos.total > 0) {
+                inputImporte.value = datos.total.toFixed(2);
             }
             inputImporte.blur(); 
         }
