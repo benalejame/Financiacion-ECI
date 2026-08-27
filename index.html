@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -117,7 +117,7 @@
             width: 100%;
         }
 
-        input[type="number"], input[type="text"] {
+        input[type="text"] {
             width: 100%;
             padding: 10px 10px; 
             font-size: 1.05rem;
@@ -127,11 +127,11 @@
             transition: border-color 0.2s;
         }
         
-        input[type="number"] {
+        #importe {
             padding-right: 35px; 
         }
 
-        input[type="number"]:focus, input[type="text"]:focus {
+        input[type="text"]:focus {
             border-color: var(--primary);
         }
 
@@ -240,7 +240,7 @@
             color: var(--text-light) !important;
         }
 
-        /* DISEÑO CENTRADO: Se desplaza al final tras el scroll */
+        /* DISEÑO CENTRADO */
         .creditos-tabla {
             text-align: center;
             padding: 40px 0 20px 0;
@@ -252,7 +252,7 @@
             display: block;
         }
 
-        /* CONFIGURACIÓN DE IMPRESIÓN MEJORADA */
+        /* CONFIGURACIÓN DE IMPRESIÓN */
         @media print {
             @page {
                 size: portrait;
@@ -276,7 +276,6 @@
                 padding: 0 !important;
             }
             
-            /* Encabezado vertical con compresión de espacio */
             h1 {
                 font-size: 1.3rem !important;
                 margin-bottom: 6px !important; 
@@ -299,7 +298,6 @@
                 display: none !important;
             }
             
-            /* NUEVA FILA UNIFICADA: Importe a la izquierda, Asesor y Fecha alineados a la derecha */
             .datos-cabecera-impresion {
                 display: flex !important;
                 justify-content: space-between !important;
@@ -339,7 +337,6 @@
                 display: none !important;
             }
             
-            /* Recuperado tamaño de fuente cómodo original */
             .fila-tabla {
                 page-break-inside: avoid;
                 font-size: 0.78rem !important; 
@@ -390,7 +387,7 @@
             <div class="input-group">
                 <label for="importe">Importe de la compra (€)</label>
                 <div class="input-wrapper">
-                    <input type="number" id="importe" placeholder="Introduce importe" min="0" step="0.01" inputmode="decimal">
+                    <input type="text" id="importe" placeholder="Ej: 899 + 49 - 20" inputmode="text" autocomplete="off" autocorrect="off">
                     <button type="button" id="btn-borrar" class="btn-borrar">✕</button>
                 </div>
             </div>
@@ -413,7 +410,6 @@
 
     <div class="scroll-container">
         <div id="tabla-body" class="cuerpo-tabla"></div>
-        
         <div id="creditos-ben" class="creditos-tabla"></div>
     </div>
 </div>
@@ -432,7 +428,6 @@
     const APLAZADO_MINIMO = 30.0;
     const INTERES_MENSUAL = 0.0151138; 
 
-    // Inicialización de créditos con formato y rango dinámico
     function actualizarCreditos() {
         const anyoInicio = 2026;
         const anyoActual = new Date().getFullYear();
@@ -440,6 +435,23 @@
         creditosBen.textContent = `© ${textoAnnos} Ben A. M.`;
     }
     actualizarCreditos();
+
+    // Función segura para evaluar sumas y restas con coma o punto
+    function evaluarExpresion(str) {
+        if (!str) return 0;
+        let limpia = str.replace(/,/g, '.').replace(/[^0-9+\-.]/g, '');
+        const tokens = limpia.match(/[+-]?[0-9]*\.?[0-9]+/g);
+        if (!tokens) return 0;
+
+        let total = 0;
+        for (let numStr of tokens) {
+            const val = parseFloat(numStr);
+            if (!isNaN(val)) {
+                total += val;
+            }
+        }
+        return total > 0 ? total : 0;
+    }
 
     function calcularGastos3Meses(importe) {
         if (importe <= 45.00) return 0.0;
@@ -454,11 +466,12 @@
     }
 
     function calcularAmortizacion() {
-        const importe = parseFloat(inputImporte.value) || 0;
+        const valorTexto = inputImporte.value.trim();
+        const importe = evaluarExpresion(valorTexto);
         
-        importeValuePrint.textContent = inputImporte.value ? importe.toFixed(2) : "0.00";
+        importeValuePrint.textContent = importe > 0 ? importe.toFixed(2) : "0.00";
         
-        if (inputImporte.value.length > 0) {
+        if (valorTexto.length > 0) {
             btnBorrar.style.display = 'flex';
         } else {
             btnBorrar.style.display = 'none';
@@ -513,7 +526,6 @@
 
     tablaBody.addEventListener('click', function(event) {
         const filaSeleccionada = event.target.closest('.fila-tabla');
-        
         if (!filaSeleccionada || filaSeleccionada.classList.contains('invalido')) return;
 
         const filasAnteriores = tablaBody.querySelectorAll('.fila-tabla.resaltada');
@@ -531,7 +543,13 @@
     });
 
     inputImporte.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') { inputImporte.blur(); }
+        if (event.key === 'Enter') {
+            const total = evaluarExpresion(inputImporte.value);
+            if (total > 0) {
+                inputImporte.value = total.toFixed(2);
+            }
+            inputImporte.blur(); 
+        }
     });
     
     inputAsesor.addEventListener('keydown', function(event) {
