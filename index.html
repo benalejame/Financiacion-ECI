@@ -88,7 +88,7 @@
             display: block;
         }
 
-        /* FILA DE CONTROLES: Estructura y alineación superior coherente */
+        /* FILA DE CONTROLES */
         .input-row {
             display: flex;
             align-items: flex-start;
@@ -105,7 +105,7 @@
             flex: 0 0 auto;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
         }
 
         label {
@@ -121,8 +121,8 @@
             text-align: left;
         }
 
-        .label-centro {
-            text-align: center;
+        .label-si {
+            text-align: left;
             width: 100%;
         }
 
@@ -442,7 +442,7 @@
             </div>
 
             <div class="input-col-centro">
-                <label for="chk-si" class="label-centro" title="Sin Intereses">S/I</label>
+                <label for="chk-si" class="label-si" title="Sin Intereses">S/I</label>
                 <label class="checkbox-si-box" for="chk-si" title="Sin Intereses">
                     <input type="checkbox" id="chk-si">
                 </label>
