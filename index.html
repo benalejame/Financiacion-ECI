@@ -88,7 +88,7 @@
             display: block;
         }
 
-        /* FILA DE CONTROLES: Totalmente equilibrada */
+        /* FILA DE CONTROLES: Estructura y alineación superior coherente */
         .input-row {
             display: flex;
             align-items: flex-start;
@@ -103,6 +103,9 @@
 
         .input-col-centro {
             flex: 0 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         label {
@@ -115,6 +118,12 @@
             overflow: hidden;
             text-overflow: ellipsis;
             line-height: 1.2;
+            text-align: left;
+        }
+
+        .label-centro {
+            text-align: center;
+            width: 100%;
         }
 
         .input-wrapper {
@@ -143,35 +152,28 @@
             border-color: var(--primary);
         }
 
-        .checkbox-si-label {
+        .checkbox-si-box {
             height: 43px;
+            width: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
-            padding: 0 10px;
             border: 2px solid var(--border);
             border-radius: 8px;
             background: #ffffff;
             cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--text);
-            user-select: none;
             transition: all 0.2s;
-            margin-bottom: 0;
         }
 
-        .checkbox-si-label:has(input:checked) {
+        .checkbox-si-box:has(input:checked) {
             border-color: var(--primary);
             background-color: rgba(0, 133, 66, 0.08);
-            color: var(--primary);
         }
 
-        .checkbox-si-label input[type="checkbox"] {
+        .checkbox-si-box input[type="checkbox"] {
             accent-color: var(--primary);
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             cursor: pointer;
         }
 
@@ -440,10 +442,9 @@
             </div>
 
             <div class="input-col-centro">
-                <label>&nbsp;</label>
-                <label class="checkbox-si-label" title="Sin Intereses">
+                <label for="chk-si" class="label-centro" title="Sin Intereses">S/I</label>
+                <label class="checkbox-si-box" for="chk-si" title="Sin Intereses">
                     <input type="checkbox" id="chk-si">
-                    <span>S/I</span>
                 </label>
             </div>
             
