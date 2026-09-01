@@ -90,11 +90,25 @@
 
         .input-row {
             display: flex;
-            gap: 10px;
+            align-items: flex-end;
+            gap: 8px;
             margin-bottom: 12px;
         }
 
-        .input-group {
+        .input-group-importe {
+            flex: 1.4;
+            position: relative;
+        }
+
+        .input-group-si {
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .input-group-asesor {
             flex: 1;
             position: relative;
         }
@@ -105,6 +119,39 @@
             font-weight: 600;
             margin-bottom: 4px;
             color: var(--text);
+        }
+
+        /* Checkbox estilizado */
+        .checkbox-si-label {
+            height: 41px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 0 8px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: #fafafa;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text);
+            user-select: none;
+            transition: all 0.2s;
+            margin-bottom: 0;
+        }
+
+        .checkbox-si-label:has(input:checked) {
+            border-color: var(--primary);
+            background-color: rgba(0, 133, 66, 0.08);
+            color: var(--primary);
+        }
+
+        .checkbox-si-label input[type="checkbox"] {
+            accent-color: var(--primary);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
         }
 
         .input-wrapper {
@@ -382,12 +429,20 @@
         </div>
         
         <div class="input-row">
-            <div class="input-group">
-                <label for="importe">Importe de la compra (€)</label>
+            <div class="input-group input-group-importe">
+                <label for="importe">Importe (€)</label>
                 <div class="input-wrapper">
                     <input type="text" id="importe" placeholder="Ej: 1200 - 300" inputmode="text" autocomplete="off" autocorrect="off">
                     <button type="button" id="btn-borrar" class="btn-borrar">✕</button>
                 </div>
+            </div>
+
+            <div class="input-group input-group-si">
+                <label>&nbsp;</label>
+                <label class="checkbox-si-label" title="Sin Intereses">
+                    <input type="checkbox" id="chk-si">
+                    <span>S/I</span>
+                </label>
             </div>
             
             <div class="input-group input-group-asesor">
@@ -414,6 +469,7 @@
 
 <script>
     const inputImporte = document.getElementById('importe');
+    const chkSI = document.getElementById('chk-si');
     const inputAsesor = document.getElementById('asesor');
     const btnBorrar = document.getElementById('btn-borrar');
     const tablaBody = document.getElementById('tabla-body');
@@ -423,7 +479,6 @@
     const nombreAsesorPrint = document.getElementById('nombre-asesor-print');
     const fechaPrint = document.getElementById('fecha-print');
 
-    const APLAZADO_MINIMO = 30.0;
     const INTERES_MENSUAL = 0.0151138; 
 
     function actualizarCreditos() {
@@ -434,7 +489,6 @@
     }
     actualizarCreditos();
 
-    // Evalúa la expresión y extrae compra, entrega a cuenta y total
     function parsearImporte(str) {
         if (!str) return { total: 0, totalCompra: 0, entregaCuenta: 0, tieneResta: false };
         
@@ -468,7 +522,7 @@
         };
     }
 
-    function calcularGastos3Meses(importe) {
+    function calcularGastosGestion(importe) {
         if (importe <= 45.00) return 0.0;
         if (importe <= 90.00) return 1.0;
         if (importe <= 125.00) return 2.0;
@@ -481,15 +535,16 @@
     }
 
     function actualizarImpresionDesglose(datos) {
+        const modalidad = chkSI.checked ? ' (Sin Intereses)' : '';
         if (datos.tieneResta && datos.entregaCuenta > 0) {
             bloqueDesglose.innerHTML = `
                 <div>Valor de la compra: <strong>${datos.totalCompra.toFixed(2)}€</strong></div>
                 <div>Entrega a cuenta: <strong>${datos.entregaCuenta.toFixed(2)}€</strong></div>
-                <div>Importe a financiar: <strong>${datos.total.toFixed(2)}€</strong></div>
+                <div>Importe a financiar${modalidad}: <strong>${datos.total.toFixed(2)}€</strong></div>
             `;
         } else {
             bloqueDesglose.innerHTML = `
-                <div>Importe a financiar: <strong>${datos.total > 0 ? datos.total.toFixed(2) : "0.00"}€</strong></div>
+                <div>Importe a financiar${modalidad}: <strong>${datos.total > 0 ? datos.total.toFixed(2) : "0.00"}€</strong></div>
             `;
         }
     }
@@ -498,6 +553,8 @@
         const valorTexto = inputImporte.value.trim();
         const datos = parsearImporte(valorTexto);
         const importe = datos.total;
+        const sinIntereses = chkSI.checked;
+        const cuotaMinima = sinIntereses ? 20.0 : 30.0;
         
         actualizarImpresionDesglose(datos);
         
@@ -511,24 +568,31 @@
 
         if (importe <= 0) return;
 
+        const gastosGestion = calcularGastosGestion(importe);
+
         for (let meses = 3; meses <= 36; meses++) {
             let cuota = 0;
             let importeTotal = 0;
             let extraCosteStr = '';
 
-            if (meses === 3) {
-                const gastos = calcularGastos3Meses(importe);
-                importeTotal = importe + gastos;
-                cuota = importeTotal / 3.0;
-                extraCosteStr = `€${gastos.toFixed(2)}`;
+            if (sinIntereses) {
+                importeTotal = importe + gastosGestion;
+                cuota = importeTotal / meses;
+                extraCosteStr = `€${gastosGestion.toFixed(2)}`;
             } else {
-                cuota = (importe * INTERES_MENSUAL) / (1 - Math.pow(1 + INTERES_MENSUAL, -meses));
-                importeTotal = cuota * meses;
-                const intereses = importeTotal - importe;
-                extraCosteStr = `€${intereses.toFixed(2)}`;
+                if (meses === 3) {
+                    importeTotal = importe + gastosGestion;
+                    cuota = importeTotal / 3.0;
+                    extraCosteStr = `€${gastosGestion.toFixed(2)}`;
+                } else {
+                    cuota = (importe * INTERES_MENSUAL) / (1 - Math.pow(1 + INTERES_MENSUAL, -meses));
+                    importeTotal = cuota * meses;
+                    const intereses = importeTotal - importe;
+                    extraCosteStr = `€${intereses.toFixed(2)}`;
+                }
             }
 
-            const cumpleMinimo = cuota >= APLAZADO_MINIMO;
+            const cumpleMinimo = cuota >= cuotaMinima;
             const claseFila = cumpleMinimo ? 'fila-tabla' : 'fila-tabla invalido';
 
             const filaHTML = `
@@ -572,7 +636,6 @@
         inputImporte.focus();           
     });
 
-    // Colapsa el resultado al pulsar Enter en la casilla
     inputImporte.addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
             const datos = parsearImporte(inputImporte.value);
@@ -587,6 +650,7 @@
         if (event.key === 'Enter') { inputAsesor.blur(); }
     });
 
+    chkSI.addEventListener('change', calcularAmortizacion);
     inputImporte.addEventListener('input', calcularAmortizacion);
     inputAsesor.addEventListener('input', prepararImpresion);
     
